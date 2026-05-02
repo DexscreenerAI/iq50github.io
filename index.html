@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IQ50 Be Rich</title>
+<meta name="description" content="IQ50 Be Rich — buy a rock = Money. The dumbest galaxy-brain trade on Ethereum.">
+<link rel="icon" href="https://i.ibb.co/nNYpHk5k/6030548947820023050.jpg">
+<style>
+:root{
+  --bg:#0c0a1f;
+  --bg2:#1a1240;
+  --accent:#ffd60a;
+  --accent2:#ff61a6;
+  --text:#fff8e7;
+  --card:rgba(255,255,255,0.06);
+  --card-border:rgba(255,255,255,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Comic Sans MS','Trebuchet MS',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  line-height:1.5;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+
+/* Animated starry/cosmic background */
+.cosmic{
+  position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(ellipse at 20% 10%, #3b1d6b 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 90%, #6b1d4f 0%, transparent 55%),
+    linear-gradient(160deg,#0c0a1f 0%, #1a1240 100%);
+}
+.cosmic::after{
+  content:"";position:absolute;inset:0;
+  background-image:
+    radial-gradient(2px 2px at 12% 22%, #fff, transparent),
+    radial-gradient(1px 1px at 30% 80%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 55% 35%, #fff, transparent),
+    radial-gradient(1px 1px at 70% 60%, #fff, transparent),
+    radial-gradient(2px 2px at 85% 15%, #ffd60a, transparent),
+    radial-gradient(1px 1px at 45% 90%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 95% 70%, #ff61a6, transparent);
+  opacity:.85;
+  animation:twinkle 4s ease-in-out infinite alternate;
+}
+@keyframes twinkle{from{opacity:.4}to{opacity:1}}
+
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* Header */
+header{
+  padding:18px 0;
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(10px);
+  background:rgba(12,10,31,0.65);
+  border-bottom:1px solid var(--card-border);
+}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:48px;height:48px;border-radius:50%;border:2px solid var(--accent);object-fit:cover}
+.brand .name{
+  font-size:28px;font-weight:900;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  letter-spacing:1px;
+}
+nav ul{list-style:none;display:flex;gap:28px}
+nav a{
+  font-weight:700;font-size:15px;letter-spacing:1px;text-transform:uppercase;
+  transition:color .2s;
+}
+nav a:hover{color:var(--accent)}
+.socials{display:flex;gap:10px}
+.socials a{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--card);border:1px solid var(--card-border);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s,background .2s;
+}
+.socials a:hover{transform:translateY(-3px) rotate(-6deg);background:var(--accent);color:#0c0a1f}
+.socials svg{width:18px;height:18px;fill:currentColor}
+
+/* Hero */
+.hero{padding:80px 0 60px;text-align:center;position:relative}
+.hero-logo{
+  width:300px;height:300px;margin:0 auto 30px;
+  border-radius:50%;
+  border:6px solid var(--accent);
+  box-shadow:0 0 60px rgba(255,214,10,.45),0 0 120px rgba(255,97,166,.25);
+  animation:bob 3.5s ease-in-out infinite;
+  object-fit:cover;
+}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-18px) rotate(2deg)}}
+.hero h1{
+  font-size:clamp(54px,9vw,120px);
+  font-weight:900;
+  line-height:1;
+  background:linear-gradient(90deg,#ffd60a,#ff61a6,#ffd60a);
+  background-size:200% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shine 4s linear infinite;
+  text-transform:uppercase;
+  letter-spacing:-2px;
+}
+@keyframes shine{to{background-position:200% 0}}
+.hero .tagline{
+  font-size:clamp(18px,2.5vw,26px);
+  margin-top:14px;color:#fff8e7;opacity:.9;
+  font-style:italic;
+}
+.btn-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:36px}
+.btn{
+  display:inline-block;padding:16px 32px;
+  font-weight:900;font-size:16px;letter-spacing:1px;text-transform:uppercase;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#0c0a1f;border-radius:999px;
+  border:3px solid #0c0a1f;
+  box-shadow:0 6px 0 #0c0a1f, 0 8px 24px rgba(255,214,10,.35);
+  transition:transform .15s, box-shadow .15s;
+  cursor:pointer;
+}
+.btn:hover{transform:translateY(-3px);box-shadow:0 9px 0 #0c0a1f, 0 14px 30px rgba(255,214,10,.5)}
+.btn:active{transform:translateY(2px);box-shadow:0 3px 0 #0c0a1f}
+.btn.secondary{background:var(--card);color:var(--text);border-color:var(--card-border);box-shadow:0 6px 0 rgba(0,0,0,.4)}
+.contract{
+  margin-top:30px;display:inline-block;
+  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;
+  background:var(--card);border:1px solid var(--card-border);
+  padding:10px 18px;border-radius:999px;
+  word-break:break-all;cursor:pointer;
+  transition:background .2s;
+}
+.contract:hover{background:rgba(255,214,10,.15);border-color:var(--accent)}
+.contract .label{color:var(--accent);font-weight:900;margin-right:8px;font-family:'Comic Sans MS',sans-serif}
+
+/* Section base */
+section.block{padding:90px 0;position:relative}
+.section-title{
+  text-align:center;font-size:clamp(40px,6vw,72px);font-weight:900;
+  text-transform:uppercase;margin-bottom:50px;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  letter-spacing:2px;
+}
+
+/* About */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+.about-grid img{
+  border-radius:24px;border:4px solid var(--accent);
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+  transform:rotate(-2deg);
+  transition:transform .3s;
+}
+.about-grid img:hover{transform:rotate(0) scale(1.02)}
+.about-text h3{font-size:36px;margin-bottom:20px;color:var(--accent)}
+.about-text p{font-size:20px;line-height:1.7;margin-bottom:16px}
+.about-text .quote{
+  font-style:italic;font-size:24px;color:var(--accent2);
+  border-left:4px solid var(--accent);padding-left:18px;margin-top:24px;
+}
+
+/* Tokenomics */
+.tokenomics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.token-card{
+  background:var(--card);border:2px solid var(--card-border);
+  border-radius:24px;padding:40px 20px;text-align:center;
+  transition:transform .2s,border-color .2s,background .2s;
+}
+.token-card:hover{transform:translateY(-8px);border-color:var(--accent);background:rgba(255,214,10,.08)}
+.token-card .num{
+  font-size:64px;font-weight:900;line-height:1;
+  background:linear-gradient(180deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.token-card .lbl{margin-top:14px;font-size:16px;text-transform:uppercase;letter-spacing:1px;opacity:.85}
+
+/* How to buy */
+.steps{display:flex;flex-direction:column;gap:36px}
+.step{
+  display:grid;grid-template-columns:200px 1fr;gap:40px;align-items:center;
+  background:var(--card);border:2px solid var(--card-border);
+  border-radius:24px;padding:30px;
+  transition:transform .2s;
+}
+.step:hover{transform:translateX(8px)}
+.step:nth-child(even){grid-template-columns:1fr 200px}
+.step:nth-child(even) .step-img{order:2}
+.step-img{
+  width:200px;height:200px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:80px;font-weight:900;color:#0c0a1f;
+  box-shadow:0 10px 30px rgba(255,214,10,.3);
+}
+.step h4{font-size:30px;color:var(--accent);margin-bottom:12px;text-transform:uppercase}
+.step p{font-size:18px;line-height:1.6}
+
+/* Community / story */
+.story-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:30px;margin-top:40px}
+.story-card{
+  background:var(--card);border:2px solid var(--card-border);
+  border-radius:24px;overflow:hidden;
+  transition:transform .25s, border-color .25s;
+}
+.story-card:hover{transform:translateY(-6px);border-color:var(--accent)}
+.story-card img{width:100%;height:380px;object-fit:cover}
+.story-card .cap{padding:18px 22px;font-size:18px;font-weight:700;text-align:center}
+
+.cta{
+  text-align:center;margin-top:60px;
+  background:linear-gradient(135deg,rgba(255,214,10,.12),rgba(255,97,166,.12));
+  border:2px solid var(--accent);
+  border-radius:32px;padding:50px 24px;
+}
+.cta h3{font-size:36px;margin-bottom:20px}
+
+/* Footer */
+footer{
+  border-top:1px solid var(--card-border);
+  padding:50px 0 30px;margin-top:40px;
+  background:rgba(0,0,0,.3);
+}
+.footer-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px;align-items:center}
+.footer-grid img{width:120px;height:120px;border-radius:50%;border:3px solid var(--accent)}
+.footer-brand{text-align:center}
+.footer-brand .name{
+  font-size:48px;font-weight:900;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.footer-links{display:flex;flex-direction:column;gap:12px;align-items:flex-end}
+.footer-links a{
+  padding:10px 20px;background:var(--card);border:1px solid var(--card-border);
+  border-radius:999px;font-weight:700;text-transform:uppercase;font-size:14px;
+  transition:background .2s, color .2s;
+}
+.footer-links a:hover{background:var(--accent);color:#0c0a1f}
+.copyright{text-align:center;margin-top:30px;opacity:.6;font-size:13px}
+
+/* Responsive */
+@media (max-width:900px){
+  nav{display:none}
+  .about-grid,.tokenomics-grid,.story-grid,.footer-grid{grid-template-columns:1fr}
+  .step,.step:nth-child(even){grid-template-columns:1fr;text-align:center}
+  .step:nth-child(even) .step-img{order:0}
+  .step-img{margin:0 auto}
+  .footer-links{align-items:center}
+  .hero-logo{width:220px;height:220px}
+}
+</style>
+</head>
+<body>
+<div class="cosmic"></div>
+
+<header>
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="https://i.ibb.co/nNYpHk5k/6030548947820023050.jpg" alt="IQ50 Be Rich logo">
+      <span class="name">$IQ50</span>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#tokenomics">Tokenomics</a></li>
+        <li><a href="#howtobuy">How To Buy</a></li>
+        <li><a href="#community">Community</a></li>
+      </ul>
+    </nav>
+    <div class="socials">
+      <a href="https://dexscreener.com/ethereum/0x77EBeD0fD6A4B2beB98DF7731b69E0544Fbd4D51" target="_blank" rel="noopener" aria-label="Dexscreener">
+        <svg viewBox="0 0 24 24"><path d="M3 3h18v2H3zm0 4h12v2H3zm0 4h18v2H3zm0 4h8v2H3zm0 4h14v2H3z"/></svg>
+      </a>
+      <a href="https://www.dextools.io/app/token/iq50berich" target="_blank" rel="noopener" aria-label="Dextools">
+        <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8v4h2V3h-8v2h4l-6 6-4-4-8 8z"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <img class="hero-logo" src="https://i.ibb.co/nNYpHk5k/6030548947820023050.jpg" alt="IQ50 Be Rich character">
+    <h1>IQ50 Be Rich</h1>
+    <p class="tagline">Buy a rock = Money. Genius is overrated.</p>
+    <div class="btn-row">
+      <a class="btn" href="https://app.uniswap.org/swap?outputCurrency=0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32" target="_blank" rel="noopener">Buy Now</a>
+      <a class="btn secondary" href="https://dexscreener.com/ethereum/0x77EBeD0fD6A4B2beB98DF7731b69E0544Fbd4D51" target="_blank" rel="noopener">Dexscreener</a>
+      <a class="btn secondary" href="https://www.dextools.io/app/token/iq50berich" target="_blank" rel="noopener">Dextools</a>
+    </div>
+    <a class="contract" id="contract" title="Click to copy">
+      <span class="label">CA:</span>0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32
+    </a>
+  </div>
+</section>
+
+<section class="block" id="about">
+  <div class="container">
+    <h2 class="section-title">The Story</h2>
+    <div class="about-grid">
+      <img src="https://i.ibb.co/1y2pkkC/HHUk-NTc-Xw-AA-o-EX.jpg" alt="Buy a rock = Money">
+      <div class="about-text">
+        <h3>Buy a rock = Money</h3>
+        <p>Wall Street has 200-IQ quants. Crypto has galaxy-brain devs. We've got something better: a guy with an IQ of 50, a rock, and an unshakeable conviction.</p>
+        <p>$IQ50 is a celebration of the dumbest, simplest, most beautiful trade in human history — see rock, buy rock, become rich. No charts. No TA. No second thoughts.</p>
+        <p class="quote">"They laughed at me. Then I bought the rock. Now they're laughing with me."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="tokenomics" style="background:rgba(0,0,0,0.25)">
+  <div class="container">
+    <h2 class="section-title">Tokenomics</h2>
+    <div class="tokenomics-grid">
+      <div class="token-card"><div class="num">0%</div><div class="lbl">Buy Tax</div></div>
+      <div class="token-card"><div class="num">0%</div><div class="lbl">Sell Tax</div></div>
+      <div class="token-card"><div class="num">Burnt</div><div class="lbl">Liquidity</div></div>
+      <div class="token-card"><div class="num">100M</div><div class="lbl">Total Supply</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="howtobuy">
+  <div class="container">
+    <h2 class="section-title">How To Buy</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-img">1</div>
+        <div>
+          <h4>Create a Wallet</h4>
+          <p>Download MetaMask or your wallet of choice from the App Store / Google Play. Desktop users, grab the Chrome extension at metamask.io.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-img">2</div>
+        <div>
+          <h4>Get Some ETH</h4>
+          <p>Have ETH in your wallet to swap for $IQ50. You can buy directly in MetaMask, transfer from another wallet, or fund from any exchange.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-img">3</div>
+        <div>
+          <h4>Go to Uniswap</h4>
+          <p>Open app.uniswap.org. Connect your wallet. Paste the $IQ50 contract address, select the token, and confirm. Sign when MetaMask asks.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-img">4</div>
+        <div>
+          <h4>Swap ETH for $IQ50</h4>
+          <p>Zero taxes — no slippage drama. During volatile moments you may need a touch of slippage. Buy the rock. Be rich.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="community" style="background:rgba(0,0,0,0.25)">
+  <div class="container">
+    <h2 class="section-title">Join the Rock Holders</h2>
+    <div class="story-grid">
+      <div class="story-card">
+        <img src="https://i.ibb.co/1y2pkkC/HHUk-NTc-Xw-AA-o-EX.jpg" alt="IQ50 lore 1">
+        <div class="cap">Buy a rock = Money</div>
+      </div>
+      <div class="story-card">
+        <img src="https://i.ibb.co/gbJBdhH2/HHVIe30-WQAAilx1.jpg" alt="IQ50 lore 2">
+        <div class="cap">The path to enlightenment</div>
+      </div>
+    </div>
+    <div class="cta">
+      <h3>Ready to lower your IQ and raise your bag?</h3>
+      <div class="btn-row">
+        <a class="btn" href="https://app.uniswap.org/swap?outputCurrency=0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32" target="_blank" rel="noopener">Buy $IQ50</a>
+        <a class="btn secondary" href="https://dexscreener.com/ethereum/0x77EBeD0fD6A4B2beB98DF7731b69E0544Fbd4D51" target="_blank" rel="noopener">Live Chart</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <img src="https://i.ibb.co/nNYpHk5k/6030548947820023050.jpg" alt="IQ50">
+      <div class="footer-brand">
+        <div class="name">$IQ50</div>
+        <div style="opacity:.7;margin-top:6px">Be Rich. Buy the Rock.</div>
+      </div>
+      <div class="footer-links">
+        <a href="https://app.uniswap.org/swap?outputCurrency=0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32" target="_blank" rel="noopener">Buy on Uniswap</a>
+        <a href="https://dexscreener.com/ethereum/0x77EBeD0fD6A4B2beB98DF7731b69E0544Fbd4D51" target="_blank" rel="noopener">Dexscreener</a>
+        <a href="https://www.dextools.io/app/token/iq50berich" target="_blank" rel="noopener">Dextools</a>
+        <a href="https://etherscan.io/token/0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32" target="_blank" rel="noopener">Etherscan</a>
+      </div>
+    </div>
+    <div class="copyright">© 2025 IQ50 Be Rich. This is a memecoin with no intrinsic value or expectation of financial return. DYOR.</div>
+  </div>
+</footer>
+
+<script>
+  const ca = document.getElementById('contract');
+  ca.addEventListener('click', () => {
+    const addr = '0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32';
+    navigator.clipboard?.writeText(addr);
+    const original = ca.innerHTML;
+    ca.innerHTML = '<span class="label">✓</span>Copied!';
+    setTimeout(() => { ca.innerHTML = original; }, 1400);
+  });
+</script>
+</body>
+</html>
