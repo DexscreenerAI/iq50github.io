@@ -1,6 +1,6 @@
 {
   "name": "iq50-bot-deployment",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Railway entry-point that runs the IQ CTO bot located in bot/. The website (index.html, cto.html) is served by GitHub Pages from this same repo — Railway only runs the Node.js bot.",
   "private": true,
   "main": "bot/bot.js",
