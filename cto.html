@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<style id="no-zoom-guard">html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;}</style>
+<title>CTO Tracker · IQ50 Be Rich</title>
+<meta name="description" content="Live tracker of $IQ50 Be Rich and allied Community Take Over (CTO) tokens. Multipliers, market cap, and peak X — refreshed every 60 seconds.">
+<link rel="icon" type="image/png" href="https://i.ibb.co/nNYpHk5k/6030548947820023050.jpg">
+
+<meta property="og:title" content="CTO Tracker · IQ50 Be Rich">
+<meta property="og:description" content="Live multipliers for $IQ50 and allied CTOs. Buy a rock = Money.">
+<meta property="og:image" content="https://i.ibb.co/nNYpHk5k/6030548947820023050.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Orbitron:wght@500;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+.navbar {
+  --nav-bg: rgba(5, 6, 8, 0.88);
+  --nav-border: rgba(0, 255, 65, 0.12);
+  --nav-panel: #0d1117;
+  --nav-text: #e6edf3;
+  --nav-muted: rgba(255, 255, 255, 0.75);
+  --nav-cyan: #00d1ff;
+  --nav-green: #00ff80;
+  --nav-red: #ff3b4f;
+  --nav-yellow: #f0ff00;
+  --nav-font: 'JetBrains Mono', 'Courier New', monospace;
+  --nav-display: 'Orbitron', 'JetBrains Mono', monospace;
+  position: fixed; top: 0; left: 0; right: 0;
+  background: var(--nav-bg);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--nav-border);
+  display: flex; align-items: center; justify-content: flex-start;
+  gap: 0; padding: 8px 16px; z-index: 1000; min-height: 56px;
+}
+.navbar > .pill { flex-shrink: 0; }
+.navbar > .pill.nav-pill-links { flex: 1 1 auto; min-width: 0; }
+.navbar > .pill.nav-pill-links .pill-inner { width: 100%; padding: 0 16px; }
+.navbar > .pill.nav-pill-links .nav-links { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; max-width: 100%; display: flex; align-items: center; gap: 24px; }
+.navbar > .pill.nav-pill-links .nav-links::-webkit-scrollbar { display: none; height: 0; }
+.navbar > .pill.nav-pill-links .nav-links > a { flex-shrink: 0; }
+.navbar > .pill + .pill { margin-left: -8px; }
+.navbar .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; font-family: var(--nav-font); font-size: 13px; font-weight: 700; letter-spacing: 1px; }
+.navbar .nav-logo img { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; }
+.navbar .nav-link { color: var(--nav-muted); text-decoration: none; font-family: var(--nav-font); font-size: 11px; font-weight: 500; letter-spacing: 0.5px; transition: color .15s; white-space: nowrap; }
+.navbar .nav-link:hover, .navbar .nav-link.active { color: var(--nav-cyan); }
+.navbar .nav-link.accent-yellow { color: var(--nav-yellow); font-weight: 700; }
+.navbar .nav-link.accent-cyan { color: var(--nav-cyan); font-weight: 700; }
+.navbar .nav-link.accent-green { color: var(--nav-green); font-weight: 700; }
+.navbar .pill { position: relative; display: inline-flex; align-items: center; height: 44px; padding: 0; background: linear-gradient(180deg, rgba(0,255,65,0.04), rgba(0,255,65,0)); clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 100%, 0 100%); border: 0; }
+.navbar .pill::before { content: ''; position: absolute; inset: 0; clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 100%, 0 100%); background: linear-gradient(var(--nav-panel), var(--nav-panel)) padding-box, linear-gradient(180deg, rgba(0,240,255,0.35), rgba(0,255,65,0.15)) border-box; border: 1px solid transparent; z-index: 0; }
+.navbar .pill-inner { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 18px; padding: 0 22px; height: 44px; white-space: nowrap; }
+.navbar .pill-reverse { clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 16px 100%); }
+.navbar .pill-reverse::before { clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 16px 100%); }
+.navbar .font-display { font-family: var(--nav-display); letter-spacing: 2px; }
+.mobile-menu-btn { display: none; background: none; border: 1px solid var(--nav-border); color: var(--nav-text); font-size: 14px; cursor: pointer; padding: 6px 10px; border-radius: 4px; margin-left: 8px; }
+.mobile-menu { display: none; position: fixed; top: 72px; left: 0; right: 0; background: #0d1117; border-bottom: 1px solid rgba(0, 255, 65, 0.12); padding: 8px; z-index: 999; flex-direction: column; gap: 2px; max-height: 70vh; overflow-y: auto; }
+.mobile-menu.open { display: flex; }
+.mobile-menu a { color: var(--nav-text); text-decoration: none; font-size: 11px; padding: 10px 12px; border-radius: 4px; font-family: var(--nav-font); }
+.mobile-menu a:hover { background: rgba(255,255,255,0.04); }
+@media (max-width: 900px) { .navbar .nav-links { display: none; } .mobile-menu-btn { display: block; } }
+
+:root {
+  --bg: #050608;
+  --bg-panel: #0d1117;
+  --card: #0c1015;
+  --border: #0f1f12;
+  --border-bright: #1a3d20;
+  --green: #00ff41;
+  --green-dim: rgba(0, 255, 65, 0.12);
+  --green-glow: rgba(0, 255, 65, 0.6);
+  --red: #ff0040;
+  --cyan: #00f0ff;
+  --yellow: #f0ff00;
+  --purple: #bf00ff;
+  --text: #c0ffce;
+  --text-muted: rgba(192, 255, 206, 0.55);
+  --text-dim: rgba(192, 255, 206, 0.3);
+  --display: 'Orbitron', 'JetBrains Mono', monospace;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  padding-top: 72px;
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(0,255,65,0.08), transparent 55%),
+    radial-gradient(ellipse at 80% 100%, rgba(0,240,255,0.06), transparent 55%);
+}
+body::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1; background: repeating-linear-gradient(0deg, rgba(0,255,65,0.025) 0 1px, transparent 1px 3px); mix-blend-mode: overlay; }
+
+/* HERO */
+.cto-hero { text-align: center; padding: 50px 20px 20px; max-width: 1100px; margin: 0 auto; }
+.cto-badge { display: inline-block; padding: 5px 12px; border: 1px solid var(--green); background: var(--green-dim); color: var(--green); font-size: 10px; letter-spacing: 3px; margin-bottom: 18px; text-transform: uppercase; font-family: var(--display); font-weight: 700; }
+.cto-badge .dot { display: inline-block; width: 6px; height: 6px; background: var(--green); border-radius: 50%; margin-right: 8px; box-shadow: 0 0 8px var(--green); animation: pulse 1.4s ease-in-out infinite; vertical-align: middle; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+.cto-hero h1 { font-family: var(--display); font-size: clamp(36px, 7vw, 64px); line-height: 1; color: var(--text); margin-bottom: 14px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; text-shadow: 0 0 24px var(--green-glow); }
+.cto-hero h1 span { color: var(--green); }
+.cto-hero .tagline { color: var(--text-muted); font-size: 13px; letter-spacing: 1px; margin-bottom: 12px; max-width: 700px; margin-left: auto; margin-right: auto; }
+.refresh-status { font-size: 10px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; font-family: var(--display); margin-bottom: 30px; }
+.refresh-status .live-dot { display: inline-block; width: 6px; height: 6px; background: var(--green); border-radius: 50%; margin-right: 6px; vertical-align: middle; box-shadow: 0 0 8px var(--green); animation: pulse 1.4s ease-in-out infinite; }
+
+/* Featured card (IQ50) */
+.featured-section { max-width: 1100px; margin: 0 auto 60px; padding: 0 20px; }
+.section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-bright); flex-wrap: wrap; }
+.section-head h2 { font-family: var(--display); font-size: clamp(20px, 4vw, 28px); color: var(--text); letter-spacing: 3px; text-transform: uppercase; font-weight: 800; }
+.section-head .marker { font-family: var(--display); color: var(--green); font-size: 18px; font-weight: 800; }
+.section-head .sub { margin-left: auto; font-size: 11px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; }
+
+.featured-card {
+  background: linear-gradient(135deg, rgba(0,255,65,0.06), rgba(0,240,255,0.03));
+  border: 2px solid var(--green);
+  border-radius: 18px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(0,255,65,0.15);
+}
+.featured-card::before {
+  content: 'FOUNDING CTO';
+  position: absolute;
+  top: 14px; right: -38px;
+  background: var(--green); color: #000;
+  font-family: var(--display); font-weight: 900; font-size: 10px;
+  letter-spacing: 2px; padding: 4px 40px;
+  transform: rotate(35deg);
+}
+.featured-top { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; margin-bottom: 24px; }
+.featured-logo { width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--green); object-fit: cover; box-shadow: 0 0 20px rgba(0,255,65,0.4); flex-shrink: 0; }
+.featured-meta { flex: 1 1 auto; min-width: 0; }
+.featured-meta .ticker { font-family: var(--display); font-size: 32px; color: var(--green); font-weight: 900; letter-spacing: 3px; text-shadow: 0 0 12px var(--green-glow); }
+.featured-meta .name { font-size: 13px; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px; }
+.featured-meta .chips { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.chip { padding: 4px 10px; border-radius: 6px; font-size: 9px; border: 1px solid rgba(0,255,65,0.3); color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; white-space: nowrap; }
+.chip.cto { color: var(--yellow); border-color: rgba(240,255,0,0.5); background: rgba(240,255,0,0.06); }
+.chip.chain { color: var(--cyan); border-color: rgba(0,240,255,0.4); }
+
+.featured-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.stat-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(0,255,65,0.18); border-radius: 12px; padding: 16px 14px; position: relative; overflow: hidden; }
+.stat-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--green), transparent); }
+.stat-box .lbl { font-size: 9px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; font-family: var(--display); font-weight: 700; }
+.stat-box .val { font-family: var(--display); font-size: 24px; font-weight: 800; color: var(--text); line-height: 1; }
+.stat-box .val.green { color: var(--green); }
+.stat-box .val.yellow { color: var(--yellow); }
+.stat-box .val.cyan { color: var(--cyan); }
+.stat-box .val.red { color: var(--red); }
+.stat-box .sub { font-size: 10px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; }
+
+.featured-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 8px; font-family: var(--display); font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all .15s; border: 1px solid; }
+.btn.green { background: var(--green); color: #000; border-color: var(--green); }
+.btn.green:hover { background: transparent; color: var(--green); box-shadow: 0 0 20px var(--green-glow); }
+.btn.ghost { background: transparent; color: var(--cyan); border-color: var(--cyan); }
+.btn.ghost:hover { background: rgba(0,240,255,0.08); box-shadow: 0 0 16px rgba(0,240,255,0.4); }
+.btn.yellow { background: var(--yellow); color: #000; border-color: var(--yellow); }
+.btn.yellow:hover { background: transparent; color: var(--yellow); box-shadow: 0 0 16px rgba(240,255,0,0.4); }
+
+/* Apply banner */
+.apply-banner { max-width: 1100px; margin: 0 auto 30px; padding: 24px 22px; background: linear-gradient(135deg, rgba(0,240,255,0.08), rgba(191,0,255,0.04)); border: 1px solid var(--cyan); border-radius: 14px; text-align: center; }
+.apply-banner h3 { font-family: var(--display); font-size: 14px; color: var(--cyan); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
+.apply-banner p { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 14px; max-width: 600px; margin-left: auto; margin-right: auto; }
+.apply-banner .free { color: var(--yellow); font-weight: 700; }
+
+/* Allied grid */
+.allied-section { max-width: 1100px; margin: 0 auto 60px; padding: 0 20px; }
+.allied-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 14px; }
+.allied-card {
+  display: flex; flex-direction: column; gap: 12px; padding: 16px;
+  background: rgba(0,0,0,0.35); border: 1px solid rgba(0,255,65,0.14);
+  border-radius: 14px; color: var(--text); text-decoration: none;
+  cursor: pointer; transition: border-color .15s, background .15s, transform .15s;
+}
+.allied-card:hover { background: rgba(0,255,65,0.04); border-color: rgba(0,255,65,0.4); transform: translateY(-2px); }
+.allied-top { display: flex; gap: 12px; align-items: flex-start; }
+.allied-logo { position: relative; width: 50px; height: 50px; border-radius: 12px; border: 1px solid rgba(0,255,65,0.25); background: var(--card); overflow: hidden; flex-shrink: 0; }
+.allied-logo span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 700; font-size: 20px; color: var(--text); }
+.allied-logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
+.allied-logo img.loaded { display: block; }
+.allied-head { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.allied-title { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.allied-ticker { font-family: var(--display); font-weight: 800; font-size: 16px; color: var(--text); letter-spacing: 1px; }
+.allied-name { font-size: 11px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.allied-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.allied-stat { padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(0,255,65,0.15); background: rgba(0,0,0,0.25); }
+.allied-stat .v { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--text); }
+.allied-stat .v.peak { color: var(--yellow); }
+.allied-stat .v.x { color: var(--green); }
+.allied-stat .v.x.down { color: var(--red); }
+.allied-stat .l { font-size: 9px; color: var(--text-dim); margin-top: 3px; letter-spacing: 0.3px; text-transform: uppercase; }
+.allied-sep { height: 1px; background: rgba(255,255,255,0.07); border: 0; margin: 0; }
+
+.empty-state {
+  grid-column: 1 / -1;
+  padding: 50px 20px; text-align: center;
+  border: 1px dashed rgba(0,255,65,0.25); border-radius: 14px;
+  color: var(--text-dim); font-family: var(--display);
+  font-size: 13px; letter-spacing: 2px;
+}
+.empty-state .icon { font-size: 36px; margin-bottom: 14px; opacity: 0.6; }
+.empty-state p { font-size: 11px; color: var(--text-muted); margin-top: 10px; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.6; letter-spacing: 1px; text-transform: none; font-family: var(--mono); }
+
+/* Footer */
+.footer-bar { max-width: 1100px; margin: 60px auto 30px; padding: 24px 20px; border-top: 1px solid var(--border-bright); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; }
+.footer-bar .brand { display: flex; align-items: center; gap: 12px; }
+.footer-bar .brand img { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--green); }
+.footer-bar .brand .name { font-family: var(--display); font-size: 18px; font-weight: 800; letter-spacing: 2px; color: var(--green); }
+.footer-bar .links { display: flex; gap: 14px; flex-wrap: wrap; }
+.footer-bar .links a { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-decoration: none; letter-spacing: 1px; text-transform: uppercase; transition: color .15s; }
+.footer-bar .links a:hover { color: var(--cyan); }
+.copyright { text-align: center; font-size: 10px; color: var(--text-dim); letter-spacing: 2px; padding-bottom: 30px; }
+
+@media (max-width: 600px) {
+  .featured-card::before { display: none; }
+  .featured-top { flex-direction: column; align-items: center; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <span class="pill nav-pill-logo">
+    <span class="pill-inner">
+      <a href="./index.html" class="nav-logo">
+        <img src="https://i.ibb.co/nNYpHk5k/6030548947820023050.jpg" alt="IQ50">
+        <span class="font-display">$IQ50</span>
+      </a>
+    </span>
+  </span>
+
+  <span class="pill pill-reverse nav-pill-links">
+    <span class="pill-inner">
+      <div class="nav-links">
+        <a href="./index.html" class="nav-link">Home</a>
+        <a href="./index.html#about" class="nav-link accent-cyan">🪨 Lore</a>
+        <a href="./index.html#tokenomics" class="nav-link accent-green">📊 Tokenomics</a>
+        <a href="./index.html#howtobuy" class="nav-link accent-yellow">🛒 How To Buy</a>
+        <a href="./cto.html" class="nav-link accent-cyan active">🤝 CTO Tracker</a>
+        <a href="https://dexscreener.com/ethereum/0x77EBeD0fD6A4B2beB98DF7731b69E0544Fbd4D51" target="_blank" rel="noopener" class="nav-link">📈 Dexscreener</a>
+        <a href="https://www.dextools.io/app/token/iq50berich" target="_blank" rel="noopener" class="nav-link">🛠 Dextools</a>
+        <a href="https://etherscan.io/token/0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32" target="_blank" rel="noopener" class="nav-link">🔍 Etherscan</a>
+      </div>
+    </span>
+  </span>
+
+  <span class="pill nav-pill-socials">
+    <span class="pill-inner">
+      <div class="nav-socials" style="display:flex;gap:14px">
+        <a href="https://t.me/IQ50Erc" target="_blank" class="nav-link" title="Telegram">💬</a>
+        <a href="https://x.com/iq50makerich" target="_blank" class="nav-link" title="X">𝕏</a>
+      </div>
+    </span>
+  </span>
+
+  <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="./index.html">🏠 Home</a>
+  <a href="./index.html#about">🪨 Lore</a>
+  <a href="./index.html#tokenomics">📊 Tokenomics</a>
+  <a href="./index.html#howtobuy">🛒 How To Buy</a>
+  <a href="./cto.html">🤝 CTO Tracker</a>
+  <a href="https://dexscreener.com/ethereum/0x77EBeD0fD6A4B2beB98DF7731b69E0544Fbd4D51" target="_blank" rel="noopener">📈 Dexscreener</a>
+  <a href="https://www.dextools.io/app/token/iq50berich" target="_blank" rel="noopener">🛠 Dextools</a>
+  <a href="https://etherscan.io/token/0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32" target="_blank" rel="noopener">🔍 Etherscan</a>
+</div>
+
+<section class="cto-hero">
+  <div class="cto-badge"><span class="dot"></span>CTO TRACKER · LIVE</div>
+  <h1>CTO <span>Tracker</span></h1>
+  <p class="tagline">Live multipliers and market caps for $IQ50 and allied Community Take Over tokens. Powered by Dexscreener.</p>
+  <div class="refresh-status"><span class="live-dot"></span><span id="refresh-label">Refreshing every 60s · last update <span id="last-update">—</span></span></div>
+</section>
+
+<section class="featured-section">
+  <div class="section-head">
+    <span class="marker">//</span>
+    <h2>Featured CTO</h2>
+    <span class="sub">FOUNDING TOKEN · #001</span>
+  </div>
+  <div class="featured-card" id="featured-card" data-contract="0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32" data-chain="ethereum">
+    <div class="featured-top">
+      <img class="featured-logo" src="https://i.ibb.co/nNYpHk5k/6030548947820023050.jpg" alt="IQ50">
+      <div class="featured-meta">
+        <div class="ticker">$IQ50</div>
+        <div class="name">IQ50 Be Rich · Buy a rock = Money</div>
+        <div class="chips">
+          <span class="chip cto">🤝 CTO</span>
+          <span class="chip chain">ETHEREUM</span>
+          <span class="chip">0/0 TAX</span>
+          <span class="chip">LP BURNT</span>
+          <span class="chip">RENOUNCED</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="featured-stats">
+      <div class="stat-box"><div class="lbl">Price</div><div class="val green" id="f-price">—</div><div class="sub" id="f-price-sub">USD</div></div>
+      <div class="stat-box"><div class="lbl">Market Cap</div><div class="val" id="f-mc">—</div><div class="sub">Live</div></div>
+      <div class="stat-box"><div class="lbl">Current X</div><div class="val x" id="f-x">—</div><div class="sub" id="f-x-sub">From CTO call</div></div>
+      <div class="stat-box"><div class="lbl">Peak X (ATH)</div><div class="val yellow" id="f-peak">—</div><div class="sub">All-time</div></div>
+      <div class="stat-box"><div class="lbl">24h Volume</div><div class="val cyan" id="f-vol">—</div><div class="sub">USD</div></div>
+      <div class="stat-box"><div class="lbl">24h Change</div><div class="val" id="f-chg">—</div><div class="sub">Price</div></div>
+    </div>
+
+    <div class="featured-actions">
+      <a class="btn green" href="https://app.uniswap.org/swap?outputCurrency=0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32" target="_blank" rel="noopener">💎 Buy $IQ50</a>
+      <a class="btn ghost" href="https://dexscreener.com/ethereum/0x77EBeD0fD6A4B2beB98DF7731b69E0544Fbd4D51" target="_blank" rel="noopener">📈 Dexscreener</a>
+      <a class="btn yellow" href="https://www.dextools.io/app/token/iq50berich" target="_blank" rel="noopener">🛠 Dextools</a>
+    </div>
+  </div>
+</section>
+
+<div class="apply-banner">
+  <h3>🤝 Apply Your CTO</h3>
+  <p>Want your project featured on this page? <span class="free">Listing is free.</span> Send your token contract, chain, logo and a short pitch on the official $IQ50 Telegram. Community votes, admins add it. The rock holders welcome you.</p>
+  <a class="btn ghost" href="https://t.me/IQ50Erc" target="_blank" rel="noopener">💬 Apply on t.me/IQ50Erc</a>
+</div>
+
+<section class="allied-section">
+  <div class="section-head">
+    <span class="marker">//</span>
+    <h2>Allied CTOs</h2>
+    <span class="sub" id="allied-count">0 LISTED</span>
+  </div>
+  <div class="allied-grid" id="allied-grid">
+    <div class="empty-state">
+      <div class="icon">🪨</div>
+      <div>NO ALLIED CTO YET</div>
+      <p>Be the first. Drop your contract, chain, logo and pitch on <strong style="color:var(--cyan)">t.me/IQ50Erc</strong> to be added here. Your live multipliers will be tracked alongside $IQ50.</p>
+    </div>
+  </div>
+</section>
+
+<div class="footer-bar">
+  <div class="brand">
+    <img src="https://i.ibb.co/nNYpHk5k/6030548947820023050.jpg" alt="IQ50">
+    <span class="name">$IQ50 · BE RICH</span>
+  </div>
+  <div class="links">
+    <a href="./index.html">Home</a>
+    <a href="https://app.uniswap.org/swap?outputCurrency=0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32" target="_blank" rel="noopener">Uniswap</a>
+    <a href="https://dexscreener.com/ethereum/0x77EBeD0fD6A4B2beB98DF7731b69E0544Fbd4D51" target="_blank" rel="noopener">Dexscreener</a>
+    <a href="https://www.dextools.io/app/token/iq50berich" target="_blank" rel="noopener">Dextools</a>
+    <a href="https://etherscan.io/token/0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32" target="_blank" rel="noopener">Etherscan</a>
+    <a href="https://t.me/IQ50Erc" target="_blank" rel="noopener">Telegram</a>
+    <a href="https://x.com/iq50makerich" target="_blank" rel="noopener">X</a>
+  </div>
+</div>
+<div class="copyright">© 2025 $IQ50 BE RICH · CTO TRACKER · DATA BY DEXSCREENER · NOT FINANCIAL ADVICE</div>
+
+<script>
+function toggleMobileMenu() { const m = document.getElementById('mobileMenu'); if (m) m.classList.toggle('open'); }
+
+/* =========================================================
+ *  CONFIG — edit this list to add allied CTOs.
+ *  Each entry must have: ticker, name, contract, chain, logo.
+ *  Optional: calledMc (anchor for X multiplier).
+ *  Allied tokens are added once requested & approved on t.me/IQ50Erc.
+ * ========================================================= */
+const FEATURED = {
+  ticker: 'IQ50',
+  name: 'IQ50 Be Rich',
+  chain: 'ethereum',
+  contract: '0x692Dc5f9A1045eb54f965ADBE1b2592AD8Cf7c32',
+  logo: 'https://i.ibb.co/nNYpHk5k/6030548947820023050.jpg',
+  // calledMc: market cap (USD) at the moment of CTO declaration.
+  // Leave null to use the lowest seen MC since this page first loaded.
+  calledMc: null
+};
+
+const ALLIES = [
+  // Example template — uncomment and edit:
+  // {
+  //   ticker: 'EXMPL',
+  //   name: 'Example CTO',
+  //   chain: 'ethereum',         // 'ethereum' | 'solana' | 'base' | 'bsc'
+  //   contract: '0x...',
+  //   logo: 'https://...',
+  //   calledMc: 100000
+  // },
+];
+
+/* =========================================================
+ *  Helpers
+ * ========================================================= */
+const fmtUSD = n => {
+  if (!isFinite(n) || n < 0) return '$0';
+  if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(1) + 'K';
+  return '$' + Math.round(n).toLocaleString();
+};
+const fmtPrice = n => {
+  if (!isFinite(n) || n <= 0) return '—';
+  if (n >= 1) return '$' + n.toFixed(4);
+  if (n >= 0.01) return '$' + n.toFixed(5);
+  return '$' + n.toExponential(3);
+};
+const fmtX = x => {
+  if (!isFinite(x) || x <= 0) return '—';
+  if (x >= 100) return Math.round(x) + 'x';
+  if (x >= 10) return x.toFixed(1) + 'x';
+  return x.toFixed(2) + 'x';
+};
+const fmtPct = p => {
+  if (!isFinite(p)) return '—';
+  const sign = p >= 0 ? '+' : '';
+  return sign + p.toFixed(1) + '%';
+};
+
+const cacheKey = c => 'iq50cto_peak_' + c.toLowerCase();
+const anchorKey = c => 'iq50cto_anchor_' + c.toLowerCase();
+const getPeak = (c) => { try { return parseFloat(localStorage.getItem(cacheKey(c))) || 0; } catch (_) { return 0; } };
+const setPeak = (c, v) => { try { localStorage.setItem(cacheKey(c), String(v)); } catch (_) {} };
+const getAnchor = (c) => { try { return parseFloat(localStorage.getItem(anchorKey(c))) || 0; } catch (_) { return 0; } };
+const setAnchor = (c, v) => { try { localStorage.setItem(anchorKey(c), String(v)); } catch (_) {} };
+
+/* =========================================================
+ *  Dexscreener fetch — public REST API, no key needed.
+ *  https://api.dexscreener.com/latest/dex/tokens/{contract}
+ * ========================================================= */
+async function fetchToken(contract, chain) {
+  const url = 'https://api.dexscreener.com/latest/dex/tokens/' + contract;
+  const r = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  if (!r.ok) throw new Error('http ' + r.status);
+  const d = await r.json();
+  const pairs = (d.pairs || []).filter(p => !chain || p.chainId === chain);
+  if (!pairs.length) return null;
+  // Pick pair with highest liquidity USD
+  pairs.sort((a, b) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0));
+  const p = pairs[0];
+  return {
+    priceUsd: parseFloat(p.priceUsd) || 0,
+    marketCap: p.marketCap || p.fdv || 0,
+    fdv: p.fdv || 0,
+    vol24h: p.volume?.h24 || 0,
+    chg24h: p.priceChange?.h24 || 0,
+    pairUrl: p.url,
+    chain: p.chainId,
+    pairAddress: p.pairAddress
+  };
+}
+
+function computeX(currentMc, configCalledMc, contract) {
+  if (configCalledMc && configCalledMc > 0) return currentMc / configCalledMc;
+  // Auto-anchor: store the lowest MC seen since first visit
+  const stored = getAnchor(contract);
+  if (!stored || currentMc < stored) {
+    if (currentMc > 0) setAnchor(contract, currentMc);
+    return 1;
+  }
+  return currentMc / stored;
+}
+
+/* =========================================================
+ *  Render featured (IQ50)
+ * ========================================================= */
+async function renderFeatured() {
+  try {
+    const data = await fetchToken(FEATURED.contract, FEATURED.chain);
+    if (!data) return;
+    const { priceUsd, marketCap, vol24h, chg24h } = data;
+    const x = computeX(marketCap, FEATURED.calledMc, FEATURED.contract);
+    const peak = Math.max(getPeak(FEATURED.contract), x);
+    if (peak > getPeak(FEATURED.contract)) setPeak(FEATURED.contract, peak);
+
+    document.getElementById('f-price').textContent = fmtPrice(priceUsd);
+    document.getElementById('f-mc').textContent = fmtUSD(marketCap);
+    const xEl = document.getElementById('f-x');
+    xEl.textContent = fmtX(x);
+    xEl.className = 'val x' + (x < 1 ? ' red' : x >= 2 ? ' green' : '');
+    document.getElementById('f-x-sub').textContent = FEATURED.calledMc
+      ? 'From ' + fmtUSD(FEATURED.calledMc)
+      : 'Auto-anchored';
+    document.getElementById('f-peak').textContent = fmtX(peak);
+    document.getElementById('f-vol').textContent = fmtUSD(vol24h);
+    const chgEl = document.getElementById('f-chg');
+    chgEl.textContent = fmtPct(chg24h);
+    chgEl.className = 'val ' + (chg24h >= 0 ? 'green' : 'red');
+  } catch (e) { /* silent */ }
+}
+
+/* =========================================================
+ *  Render allies grid
+ * ========================================================= */
+async function renderAllies() {
+  const grid = document.getElementById('allied-grid');
+  const countEl = document.getElementById('allied-count');
+  countEl.textContent = ALLIES.length + ' LISTED';
+  if (!ALLIES.length) return; // empty state already in HTML
+
+  const results = await Promise.all(ALLIES.map(async (a) => {
+    try {
+      const data = await fetchToken(a.contract, a.chain);
+      return { a, data };
+    } catch { return { a, data: null }; }
+  }));
+
+  grid.innerHTML = results.map(({ a, data }) => {
+    if (!data) {
+      return `
+        <div class="allied-card">
+          <div class="allied-top">
+            <div class="allied-logo">${a.logo ? `<img src="${a.logo}" onload="this.classList.add('loaded')" onerror="this.remove()">` : ''}<span>${(a.ticker||'?').slice(0,1).toUpperCase()}</span></div>
+            <div class="allied-head">
+              <div class="allied-title"><span class="allied-ticker">$${a.ticker}</span></div>
+              <span class="allied-name">${a.name || ''}</span>
+              <div class="chips" style="margin-top:4px;"><span class="chip">DATA UNAVAILABLE</span></div>
+            </div>
+          </div>
+        </div>`;
+    }
+    const x = computeX(data.marketCap, a.calledMc, a.contract);
+    const peak = Math.max(getPeak(a.contract), x);
+    if (peak > getPeak(a.contract)) setPeak(a.contract, peak);
+    const xCls = x >= 1 ? 'x' : 'x down';
+    const dexUrl = data.pairUrl || `https://dexscreener.com/${data.chain || a.chain}/${data.pairAddress || a.contract}`;
+    return `
+      <a class="allied-card" href="${dexUrl}" target="_blank" rel="noopener">
+        <div class="allied-top">
+          <div class="allied-logo"><span>${(a.ticker||'?').slice(0,1).toUpperCase()}</span>${a.logo ? `<img src="${a.logo}" onload="this.classList.add('loaded')" onerror="this.remove()">` : ''}</div>
+          <div class="allied-head">
+            <div class="allied-title">
+              <span class="allied-ticker">$${a.ticker}</span>
+              <span class="allied-name">${a.name || ''}</span>
+            </div>
+            <div class="chips" style="margin-top:2px;">
+              <span class="chip cto">🤝 CTO</span>
+              <span class="chip chain">${(data.chain || a.chain || '').toUpperCase()}</span>
+            </div>
+          </div>
+        </div>
+        <hr class="allied-sep">
+        <div class="allied-stats">
+          <div class="allied-stat"><div class="v">${fmtUSD(data.marketCap)}</div><div class="l">Market Cap</div></div>
+          <div class="allied-stat"><div class="v ${xCls}">${fmtX(x)}</div><div class="l">Current X</div></div>
+          <div class="allied-stat"><div class="v peak">${fmtX(peak)}</div><div class="l">Peak X</div></div>
+        </div>
+      </a>`;
+  }).join('');
+}
+
+/* =========================================================
+ *  Loop
+ * ========================================================= */
+async function refresh() {
+  await Promise.all([renderFeatured(), renderAllies()]);
+  const now = new Date();
+  document.getElementById('last-update').textContent = now.toLocaleTimeString();
+}
+
+refresh();
+setInterval(refresh, 60 * 1000);
+</script>
+</body>
+</html>
