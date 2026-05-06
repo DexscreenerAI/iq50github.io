@@ -1,0 +1,22 @@
+{
+  "name": "iq50-bot-deployment",
+  "version": "1.0.0",
+  "description": "Railway entry-point that runs the IQ CTO bot located in bot/. The website (index.html, cto.html) is served by GitHub Pages from this same repo — Railway only runs the Node.js bot.",
+  "private": true,
+  "main": "bot/bot.js",
+  "scripts": {
+    "start": "node bot/bot.js",
+    "dev": "node bot/bot.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "node-telegram-bot-api": "^0.64.0"
+  },
+  "author": "IQ50",
+  "license": "MIT"
+}
