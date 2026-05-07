@@ -343,6 +343,34 @@ app.use(express.json({ limit: '2mb' }));
 app.get('/', (req, res) => res.json({ ok: true, name: 'IQ CTO Bot', version: '1.0.0' }));
 app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }));
 
+// Test endpoint — manually fire a sniper alert into SNIPER_CHAT_ID so an
+// admin can verify the channel + token + alert format without waiting for
+// the sniper engine to organically detect a real signal. Protected by
+// CTO_ADMIN_KEY so randoms can't spam the channel.
+app.post('/api/test/broadcast', (req, res) => {
+  const ADMIN = process.env.CTO_ADMIN_KEY || '';
+  const { key, type = 'TRADE', action = 'OPEN', data } = req.body || {};
+  if (!ADMIN || key !== ADMIN) return res.status(403).json({ error: 'admin key required' });
+  if (!SNIPER_CHAT_ID) return res.status(400).json({ error: 'SNIPER_CHAT_ID not configured — set it in env vars and redeploy' });
+
+  // Sensible defaults so a curl with just {key} fires a recognizable demo
+  // signal without requiring the caller to know every field of the schema.
+  const filled = data || {
+    position: {
+      symbol: 'TEST',
+      address: '0x0000000000000000000000000000000000000000',
+      chain: 'solana',
+      pairAddress: 'DemoPairAddress11111111111111111111111111111',
+      entryMarketCap: 50000,
+      entryLiquidity: 10000,
+      logo: '',
+    },
+  };
+
+  sniperBroadcast(type, action, filled);
+  res.json({ ok: true, sent: { type, action, chatId: SNIPER_CHAT_ID } });
+});
+
 // CTO endpoints
 app.get('/api/cto/list', (req, res) => res.json({ ctos: ctoTracker.getList(), stats: ctoTracker.getStats() }));
 app.get('/api/cto/stats', (req, res) => res.json(ctoTracker.getStats()));
