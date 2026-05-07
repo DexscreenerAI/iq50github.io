@@ -72,6 +72,40 @@ function queueSniperMessage(chatId, text, opts = {}) {
   if (!sniperQueueTimer) sniperQueueTimer = setTimeout(processSniperQueue, 100);
 }
 
+function buildTweetIntentUrl(text) {
+  return 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+}
+
+function buildOpenTweet(p) {
+  const ca = p.address || p.tokenAddress || '';
+  return `🎯 NEW SIGNAL · $${p.symbol}\n\n` +
+    `⛓ ${(p.chain || 'solana').toUpperCase()}\n` +
+    `📊 MCap $${formatNumber(p.entryMarketCap)} · Liq $${formatNumber(p.entryLiquidity)}\n` +
+    (ca ? `\nCA: ${ca}\n` : '') +
+    `\nLive on ${SNIPER_PAGE_URL}`;
+}
+
+function buildMilestoneTweet(data) {
+  const m = data.milestone;
+  const x = data.currentX || m;
+  const xStr = x >= 10 ? x.toFixed(0) + 'X' : x.toFixed(2) + 'X';
+  const ca = data.address || '';
+  const emoji = m >= 50 ? '🌕' : m >= 10 ? '🚀' : m >= 5 ? '🔥' : m >= 3 ? '💥' : '📈';
+  return `${emoji} ${m}X HIT · $${data.symbol}\n\n` +
+    `Signal called at $${formatNumber(data.entryMarketCap)} MC.\n` +
+    `Now trading at ${xStr} from entry.\n` +
+    (ca ? `\nCA: ${ca}\n` : '') +
+    `\nLive on ${SNIPER_PAGE_URL}`;
+}
+
+function buildCtoTweet(c) {
+  const ca = c.addr || '';
+  return `🤝 NEW CTO LISTED · $${c.ticker}\n\n` +
+    `Called at $${formatNumber(c.calledMc)} MC on ${(c.chain || 'solana').toUpperCase()}\n` +
+    (ca ? `\nCA: ${ca}\n` : '') +
+    `\nTracking on ${CTO_PAGE_URL}`;
+}
+
 function sniperBroadcast(type, action, data) {
   const chatId = SNIPER_CHAT_ID;
   if (!chatId) return;
@@ -89,15 +123,16 @@ ${ca ? '\n\`' + ca + '\`' : ''}
 
 📈 [Chart](https://dexscreener.com/${p.chain}/${p.pairAddress})${shortCa ? ' · 🎯 [Track on IQ](' + SNIPER_PAGE_URL + ')' : ''}`;
 
+      const tweetKb = { inline_keyboard: [[{ text: '🐦 Tweet this signal', url: buildTweetIntentUrl(buildOpenTweet(p)) }]] };
       const logoUrl = p.logo || p.imageUrl || p.logoUrl || '';
       if (logoUrl) {
-        bot.sendPhoto(chatId, logoUrl, { caption, parse_mode: 'Markdown' })
+        bot.sendPhoto(chatId, logoUrl, { caption, parse_mode: 'Markdown', reply_markup: tweetKb })
           .catch(err => {
             console.warn('[sniper] sendPhoto failed, falling back to text:', err.message?.slice(0, 80));
-            queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true });
+            queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true, reply_markup: tweetKb });
           });
       } else {
-        queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true });
+        queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true, reply_markup: tweetKb });
       }
     }
 
@@ -132,15 +167,16 @@ Reason: _${data.reason}_`;
         (ca ? `\n\`${ca}\`\n` : '') +
         `\n📈 [Chart](https://dexscreener.com/${data.chain}/${data.pairAddress}) · 🎯 [Terminal](${SNIPER_PAGE_URL})`;
 
+      const tweetKbMs = { inline_keyboard: [[{ text: '🐦 Tweet ' + m + 'X', url: buildTweetIntentUrl(buildMilestoneTweet(data)) }]] };
       const logoUrl = data.logo || '';
       if (logoUrl) {
-        bot.sendPhoto(chatId, logoUrl, { caption, parse_mode: 'Markdown' })
+        bot.sendPhoto(chatId, logoUrl, { caption, parse_mode: 'Markdown', reply_markup: tweetKbMs })
           .catch(err => {
             console.warn('[sniper] milestone sendPhoto failed:', err.message?.slice(0, 80));
-            queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true });
+            queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true, reply_markup: tweetKbMs });
           });
       } else {
-        queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true });
+        queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true, reply_markup: tweetKbMs });
       }
     }
 
@@ -354,10 +390,11 @@ app.post('/api/cto/add', async (req, res) => {
           `📊 Called at $${formatNumber(c.calledMc)} MC\n` +
           (ca ? `\n\`${ca}\`\n` : '') +
           `\n📈 [Chart](${c.dexUrl}) · 🤝 [CTO Listing](${CTO_PAGE_URL})`;
+        const tweetKbCto = { inline_keyboard: [[{ text: '🐦 Tweet this CTO', url: buildTweetIntentUrl(buildCtoTweet(c)) }]] };
         const logoUrl = c.logo
           || `https://dd.dexscreener.com/ds-data/tokens/${(c.chain || 'solana').toLowerCase()}/${(c.addr || '').toLowerCase()}.png`;
-        bot.sendPhoto(SNIPER_CHAT_ID, logoUrl, { caption, parse_mode: 'Markdown' }).catch(() => {
-          bot.sendMessage(SNIPER_CHAT_ID, caption, { parse_mode: 'Markdown', disable_web_page_preview: true }).catch(() => {});
+        bot.sendPhoto(SNIPER_CHAT_ID, logoUrl, { caption, parse_mode: 'Markdown', reply_markup: tweetKbCto }).catch(() => {
+          bot.sendMessage(SNIPER_CHAT_ID, caption, { parse_mode: 'Markdown', disable_web_page_preview: true, reply_markup: tweetKbCto }).catch(() => {});
         });
       } catch (_) {}
     }
