@@ -1541,6 +1541,17 @@ Reply ONLY "SELL" or "HOLD" followed by max 5 words reason.`,
     const idx = state.positions.findIndex(p => p.id === pos.id);
     if (idx === -1) return;
 
+    // SIGNAL_ONLY mode (default): keep every position open forever so the
+    // sniper terminal mirrors a CTO listing — peak X tracked live, no
+    // automatic exits. Manual closes via the API (reason 'MANUAL' or
+    // 'MOON SOLD') and explicit RUG / LIQ_PULL events still go through.
+    const SIGNAL_ONLY = process.env.SIGNAL_ONLY !== 'false';
+    const allowedAutoCloses = ['MANUAL', 'MOON SOLD', 'RUG', 'LIQ PULL'];
+    if (SIGNAL_ONLY && !allowedAutoCloses.includes(reason)) {
+      if (!silent) addLog('🛡️', `${pos.symbol} would close (${reason}) — kept open in SIGNAL_ONLY mode`);
+      return;
+    }
+
     const remainingValue = pos.currentSize * (1 + pos.pnlPct / 100);
     const remainingPnl = remainingValue - pos.currentSize;
     const holdMin = Math.floor((Date.now() - pos.entryTime) / 60000);
