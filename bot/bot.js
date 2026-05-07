@@ -462,6 +462,9 @@ app.post('/api/sniper/sellmoon/:id', (req, res) => {
   res.json({ success: ok, state: sniper.getState() });
 });
 app.post('/api/sniper/reset', (req, res) => {
+  const ADMIN = process.env.CTO_ADMIN_KEY || '';
+  const key = (req.body && req.body.key) || req.query.key || '';
+  if (ADMIN && key !== ADMIN) return res.status(403).json({ error: 'admin key required' });
   sniper.reset();
   res.json({ success: true, state: sniper.getState() });
 });
