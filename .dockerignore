@@ -1,0 +1,11 @@
+node_modules
+bot/node_modules
+.git
+.env
+.env.local
+*.log
+data/
+index.html
+cto.html
+CNAME
+README.md
