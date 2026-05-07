@@ -379,17 +379,32 @@ const FEATURED = {
   calledMc: null
 };
 
-const ALLIES = [
-  // Example template — uncomment and edit:
-  // {
-  //   ticker: 'EXMPL',
-  //   name: 'Example CTO',
-  //   chain: 'ethereum',         // 'ethereum' | 'solana' | 'base' | 'bsc'
-  //   contract: '0x...',
-  //   logo: 'https://...',
-  //   calledMc: 100000
-  // },
-];
+// Allied CTOs are loaded dynamically from the IQ CTO bot API on every
+// refresh — admins manage the list with POST /api/cto/add against this
+// same backend, no edits to this HTML needed.
+const BOT_API = 'https://iq50github-io.onrender.com';
+let ALLIES = [];
+
+async function loadAllies() {
+  try {
+    const r = await fetch(BOT_API + '/api/cto/list', { cache: 'no-store' });
+    if (!r.ok) return;
+    const j = await r.json();
+    const featuredCa = (FEATURED.contract || '').toLowerCase();
+    ALLIES = (j.ctos || [])
+      .filter(c => (c.addr || '').toLowerCase() !== featuredCa) // featured shown above
+      .map(c => ({
+        ticker: c.ticker,
+        name: c.name || '',
+        chain: c.chain || 'ethereum',
+        contract: c.addr,
+        logo: c.logo || '',
+        calledMc: c.calledMc || null,
+      }));
+  } catch (e) {
+    console.warn('[cto] loadAllies failed:', e?.message || e);
+  }
+}
 
 /* =========================================================
  *  Helpers
@@ -555,6 +570,7 @@ async function renderAllies() {
  *  Loop
  * ========================================================= */
 async function refresh() {
+  await loadAllies();
   await Promise.all([renderFeatured(), renderAllies()]);
   const now = new Date();
   document.getElementById('last-update').textContent = now.toLocaleTimeString();
