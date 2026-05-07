@@ -256,16 +256,20 @@ function createSniperEngine(options = {}) {
     // signal rate back up while still rejecting obvious rug-shapes via
     // GoPlus / RugCheck / GMGN hard gates downstream.
     minScore: 20,                // restore flow first, tighten later
-    minMC: 3000,
-    maxMC: 200000,               // back up — bias is in the scoring, not the cap
-    minLiquidity: 1000,          // was 3000 — sub-$10K pump.fun tokens often have $1-2K liq
+    // MC / liquidity / volume floors are env-overridable so they can be
+    // tuned from Render without a redeploy. Defaults bumped after holders
+    // reported $7K-vol signals as too noisy — 25K vol + 5K liq is the
+    // current "real traction" floor for IQ CTO.
+    minMC: parseFloat(process.env.MIN_MC) || 3000,
+    maxMC: parseFloat(process.env.MAX_MC) || 200000,
+    minLiquidity: parseFloat(process.env.MIN_LIQUIDITY) || 5000,
     maxPoolAge: 1800,
     minHolders: 15,
     maxTop10Pct: 65,
     maxTopHolderPct: 30,
     requireSocials: false,
-    minVolume24h: 1000,          // was 5000 — sub-$10K often <$2K vol
-    minBuys10m: 3,
+    minVolume24h: parseFloat(process.env.MIN_VOLUME_24H) || 25000,
+    minBuys10m: parseInt(process.env.MIN_BUYS_10M, 10) || 5,
     minLiqToMcRatio: 0.02,       // was 0.06 → 0.04 → 0.02 (2% — was killing too many)
     requireHolderData: false,
 
