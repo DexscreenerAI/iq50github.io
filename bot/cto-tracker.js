@@ -207,14 +207,17 @@ async function addCto(input, opts = {}) {
     return { error: 'already listed', cto: DB.ctos[key] };
   }
   const now = Date.now();
-  const callMc = base.currentMc;
+  // Allow caller to override the call MC — used to seed historical signals
+  // (e.g. the first IQ bot CTO was called at 4K, but current MC is higher).
+  const callMc = (opts.calledMc && opts.calledMc > 0) ? parseFloat(opts.calledMc) : base.currentMc;
+  const peakMc = Math.max(callMc, base.currentMc);
   DB.ctos[key] = {
     ...base,
-    calledAt: now,
+    calledAt: opts.calledAt || now,
     calledMc: callMc,
-    peakMc: callMc,
-    peakX: 1,
-    currentX: 1,
+    peakMc: peakMc,
+    peakX: callMc > 0 ? peakMc / callMc : 1,
+    currentX: callMc > 0 ? base.currentMc / callMc : 1,
     lastChecked: now,
     addedBy: opts.addedBy || '',
     note: opts.note || '',

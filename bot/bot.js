@@ -24,6 +24,7 @@ const GROUP_CHAT_ID   = process.env.GROUP_CHAT_ID || null;
 const SNIPER_CHAT_ID  = process.env.SNIPER_CHAT_ID || GROUP_CHAT_ID || null;
 const SITE_URL        = process.env.SITE_URL || 'https://iq50.io';
 const CTO_PAGE_URL    = process.env.CTO_PAGE_URL || `${SITE_URL}/cto.html`;
+const SNIPER_PAGE_URL = process.env.SNIPER_PAGE_URL || `${SITE_URL}/sniper_terminal.html`;
 const PORT            = parseInt(process.env.PORT, 10) || 3000;
 
 const dataDir = process.env.RAILWAY_VOLUME_MOUNT_PATH || path.join(__dirname, 'data');
@@ -45,21 +46,105 @@ function formatNumber(n) {
 }
 const fmtX = (x) => (x >= 100 ? Math.round(x) : x.toFixed(x >= 10 ? 1 : 2)) + 'X';
 
-// ─── Sniper engine ────────────────────────────────────────────────────
-async function sniperBroadcast(event) {
-  if (!SNIPER_CHAT_ID || !event) return;
+// ─── Sniper broadcast (mirrors byeboss format) ────────────────────────
+// Sniper engine calls broadcastFn(type, action, data) for each event.
+// Supported events: TRADE/OPEN, TRADE/CLOSE, TRADE/TP, TRADE/MILESTONE.
+// SCAN/RESULT and TRADE/DCA are intentionally silent — users only want
+// real signals + closes + milestones, not scan chatter.
+const sniperMsgQueue = [];
+let sniperQueueTimer = null;
+
+async function processSniperQueue() {
+  sniperQueueTimer = null;
+  if (!sniperMsgQueue.length) return;
+  const { chatId, text, opts } = sniperMsgQueue.shift();
   try {
-    const t = String(event.type || '').toUpperCase();
-    if (t === 'OPEN' || t === 'SIGNAL') {
-      const m = event.position || event;
-      const sym = m.symbol || '?';
-      const ca = m.address || '';
-      const dex = m.dexUrl || '';
-      const text = `🎯 *NEW SIGNAL · $${sym}*\n\n` +
-        (ca ? `\`${ca}\`\n\n` : '') +
-        (dex ? `📈 [Chart](${dex})` : '');
-      await bot.sendMessage(SNIPER_CHAT_ID, text, { parse_mode: 'Markdown', disable_web_page_preview: true });
+    await bot.sendMessage(chatId, text, opts);
+  } catch (e) {
+    console.warn('[sniper] sendMessage failed:', e.message?.slice(0, 80));
+  }
+  // 100ms gap between messages to stay under Telegram's per-chat rate limit
+  if (sniperMsgQueue.length) sniperQueueTimer = setTimeout(processSniperQueue, 100);
+}
+
+function queueSniperMessage(chatId, text, opts = {}) {
+  sniperMsgQueue.push({ chatId, text, opts });
+  if (!sniperQueueTimer) sniperQueueTimer = setTimeout(processSniperQueue, 100);
+}
+
+function sniperBroadcast(type, action, data) {
+  const chatId = SNIPER_CHAT_ID;
+  if (!chatId) return;
+
+  try {
+    if (type === 'TRADE' && action === 'OPEN') {
+      const p = data.position;
+      const ca = p.address || p.tokenAddress || '';
+      const shortCa = ca ? (ca.slice(0, 4) + '…' + ca.slice(-4)) : '';
+      const caption = `🎯 *NEW SIGNAL* · *$${p.symbol}*
+
+⛓ ${(p.chain || 'solana').toUpperCase()}
+📊 MCap $${formatNumber(p.entryMarketCap)} · Liq $${formatNumber(p.entryLiquidity)}
+${ca ? '\n\`' + ca + '\`' : ''}
+
+📈 [Chart](https://dexscreener.com/${p.chain}/${p.pairAddress})${shortCa ? ' · 🎯 [Track on IQ](' + SNIPER_PAGE_URL + ')' : ''}`;
+
+      const logoUrl = p.logo || p.imageUrl || p.logoUrl || '';
+      if (logoUrl) {
+        bot.sendPhoto(chatId, logoUrl, { caption, parse_mode: 'Markdown' })
+          .catch(err => {
+            console.warn('[sniper] sendPhoto failed, falling back to text:', err.message?.slice(0, 80));
+            queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true });
+          });
+      } else {
+        queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true });
+      }
     }
+
+    else if (type === 'TRADE' && action === 'CLOSE') {
+      const pct = typeof data.pnlPct === 'number' ? data.pnlPct : 0;
+      const x = 1 + pct / 100;
+      const win = x >= 1.25;
+      const icon = win ? '✅' : (x >= 1 ? '➖' : '❌');
+      const xStr = x >= 10 ? x.toFixed(0) + 'X' : x.toFixed(2) + 'X';
+      const msg = `${icon} *SIGNAL CLOSED* · *$${data.symbol}*
+
+Peak: *${xStr}*
+Reason: _${data.reason}_`;
+      queueSniperMessage(chatId, msg, { parse_mode: 'Markdown' });
+    }
+
+    else if (type === 'TRADE' && action === 'TP') {
+      const msg = `🚀 *$${data.symbol}* hit TP${data.tpLevel || ''}`;
+      queueSniperMessage(chatId, msg, { parse_mode: 'Markdown' });
+    }
+
+    else if (type === 'TRADE' && action === 'MILESTONE') {
+      const m = data.milestone;
+      const x = data.currentX || m;
+      const xStr = x >= 10 ? x.toFixed(0) + 'X' : x.toFixed(2) + 'X';
+      const emoji = m >= 50 ? '🌕' : m >= 10 ? '🚀' : m >= 5 ? '🔥' : m >= 3 ? '💥' : '📈';
+      const ca = data.address || '';
+      const caption =
+        `${emoji} *${m}X HIT* · *$${data.symbol}*\n\n` +
+        `Signal called at $${formatNumber(data.entryMarketCap)} MC.\n` +
+        `Now trading at *${xStr}* from entry.\n` +
+        (ca ? `\n\`${ca}\`\n` : '') +
+        `\n📈 [Chart](https://dexscreener.com/${data.chain}/${data.pairAddress}) · 🎯 [Terminal](${SNIPER_PAGE_URL})`;
+
+      const logoUrl = data.logo || '';
+      if (logoUrl) {
+        bot.sendPhoto(chatId, logoUrl, { caption, parse_mode: 'Markdown' })
+          .catch(err => {
+            console.warn('[sniper] milestone sendPhoto failed:', err.message?.slice(0, 80));
+            queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true });
+          });
+      } else {
+        queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true });
+      }
+    }
+
+    // SCAN/RESULT and TRADE/DCA intentionally silent.
   } catch (e) {
     console.error('Sniper broadcast error:', e.message?.slice(0, 80));
   }
@@ -239,12 +324,12 @@ app.post('/api/cto/clear', (req, res) => {
 });
 app.post('/api/cto/add', async (req, res) => {
   try {
-    const { address, addedBy, note, key } = req.body || {};
+    const { address, addedBy, note, key, calledMc, calledAt } = req.body || {};
     if (!address) return res.status(400).json({ error: 'address required' });
     const ADMIN = process.env.CTO_ADMIN_KEY || '';
     if (ADMIN && key !== ADMIN) return res.status(403).json({ error: 'admin key required' });
 
-    const r = await ctoTracker.addCto(address, { addedBy, note });
+    const r = await ctoTracker.addCto(address, { addedBy, note, calledMc, calledAt });
     if (r.error) return res.status(400).json(r);
 
     try {
