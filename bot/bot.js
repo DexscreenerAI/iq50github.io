@@ -22,7 +22,7 @@ if (!TELEGRAM_TOKEN) {
 const ADMIN_IDS       = (process.env.ADMIN_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
 const GROUP_CHAT_ID   = process.env.GROUP_CHAT_ID || null;
 const SNIPER_CHAT_ID  = process.env.SNIPER_CHAT_ID || GROUP_CHAT_ID || null;
-const SITE_URL        = process.env.SITE_URL || 'https://iq50.io';
+const SITE_URL        = process.env.SITE_URL || 'https://www.iq50token.com';
 const CTO_PAGE_URL    = process.env.CTO_PAGE_URL || `${SITE_URL}/cto.html`;
 const SNIPER_PAGE_URL = process.env.SNIPER_PAGE_URL || `${SITE_URL}/sniper_terminal.html`;
 const PORT            = parseInt(process.env.PORT, 10) || 3000;
