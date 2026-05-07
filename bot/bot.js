@@ -21,7 +21,14 @@ if (!TELEGRAM_TOKEN) {
 
 const ADMIN_IDS       = (process.env.ADMIN_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
 const GROUP_CHAT_ID   = process.env.GROUP_CHAT_ID || null;
-const SNIPER_CHAT_ID  = process.env.SNIPER_CHAT_ID || GROUP_CHAT_ID || null;
+// SNIPER_CHAT_ID accepts a single id ("-1001234567890") or a comma-separated
+// list ("-1001234567890,-1009876543210") so signals can fan out to several
+// Telegram groups / channels at once. Whitespace is trimmed.
+const SNIPER_CHAT_IDS = (process.env.SNIPER_CHAT_ID || GROUP_CHAT_ID || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+const SNIPER_CHAT_ID  = SNIPER_CHAT_IDS[0] || null; // legacy single-id ref
 const SITE_URL        = process.env.SITE_URL || 'https://www.iq50token.com';
 const CTO_PAGE_URL    = process.env.CTO_PAGE_URL || `${SITE_URL}/cto.html`;
 const SNIPER_PAGE_URL = process.env.SNIPER_PAGE_URL || `${SITE_URL}/sniper_terminal.html`;
@@ -106,9 +113,28 @@ function buildCtoTweet(c) {
     `\nTracking on ${CTO_PAGE_URL}`;
 }
 
+// Fan-out helpers — every alert is sent to every chat id in SNIPER_CHAT_IDS,
+// with photo + caption when a logo is available and a graceful text fallback
+// when sendPhoto fails (bad URL, oversized image, …). Each chat gets the
+// same reply_markup so the Tweet button works in every group.
+function dispatchPhoto(logoUrl, caption, replyMarkup) {
+  for (const chatId of SNIPER_CHAT_IDS) {
+    bot.sendPhoto(chatId, logoUrl, { caption, parse_mode: 'Markdown', reply_markup: replyMarkup })
+      .catch(err => {
+        console.warn('[sniper] sendPhoto failed (' + chatId + '):', err.message?.slice(0, 80));
+        queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true, reply_markup: replyMarkup });
+      });
+  }
+}
+
+function dispatchText(text, opts = {}) {
+  for (const chatId of SNIPER_CHAT_IDS) {
+    queueSniperMessage(chatId, text, { parse_mode: 'Markdown', disable_web_page_preview: true, ...opts });
+  }
+}
+
 function sniperBroadcast(type, action, data) {
-  const chatId = SNIPER_CHAT_ID;
-  if (!chatId) return;
+  if (!SNIPER_CHAT_IDS.length) return;
 
   try {
     if (type === 'TRADE' && action === 'OPEN') {
@@ -125,15 +151,8 @@ ${ca ? '\n\`' + ca + '\`' : ''}
 
       const tweetKb = { inline_keyboard: [[{ text: '🐦 Tweet this signal', url: buildTweetIntentUrl(buildOpenTweet(p)) }]] };
       const logoUrl = p.logo || p.imageUrl || p.logoUrl || '';
-      if (logoUrl) {
-        bot.sendPhoto(chatId, logoUrl, { caption, parse_mode: 'Markdown', reply_markup: tweetKb })
-          .catch(err => {
-            console.warn('[sniper] sendPhoto failed, falling back to text:', err.message?.slice(0, 80));
-            queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true, reply_markup: tweetKb });
-          });
-      } else {
-        queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true, reply_markup: tweetKb });
-      }
+      if (logoUrl) dispatchPhoto(logoUrl, caption, tweetKb);
+      else        dispatchText(caption, { reply_markup: tweetKb });
     }
 
     else if (type === 'TRADE' && action === 'CLOSE') {
@@ -146,12 +165,11 @@ ${ca ? '\n\`' + ca + '\`' : ''}
 
 Peak: *${xStr}*
 Reason: _${data.reason}_`;
-      queueSniperMessage(chatId, msg, { parse_mode: 'Markdown' });
+      dispatchText(msg);
     }
 
     else if (type === 'TRADE' && action === 'TP') {
-      const msg = `🚀 *$${data.symbol}* hit TP${data.tpLevel || ''}`;
-      queueSniperMessage(chatId, msg, { parse_mode: 'Markdown' });
+      dispatchText(`🚀 *$${data.symbol}* hit TP${data.tpLevel || ''}`);
     }
 
     else if (type === 'TRADE' && action === 'MILESTONE') {
@@ -169,15 +187,8 @@ Reason: _${data.reason}_`;
 
       const tweetKbMs = { inline_keyboard: [[{ text: '🐦 Tweet ' + m + 'X', url: buildTweetIntentUrl(buildMilestoneTweet(data)) }]] };
       const logoUrl = data.logo || '';
-      if (logoUrl) {
-        bot.sendPhoto(chatId, logoUrl, { caption, parse_mode: 'Markdown', reply_markup: tweetKbMs })
-          .catch(err => {
-            console.warn('[sniper] milestone sendPhoto failed:', err.message?.slice(0, 80));
-            queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true, reply_markup: tweetKbMs });
-          });
-      } else {
-        queueSniperMessage(chatId, caption, { parse_mode: 'Markdown', disable_web_page_preview: true, reply_markup: tweetKbMs });
-      }
+      if (logoUrl) dispatchPhoto(logoUrl, caption, tweetKbMs);
+      else        dispatchText(caption, { reply_markup: tweetKbMs });
     }
 
     // SCAN/RESULT and TRADE/DCA intentionally silent.
@@ -351,7 +362,7 @@ app.post('/api/test/broadcast', (req, res) => {
   const ADMIN = process.env.CTO_ADMIN_KEY || '';
   const { key, type = 'TRADE', action = 'OPEN', data } = req.body || {};
   if (!ADMIN || key !== ADMIN) return res.status(403).json({ error: 'admin key required' });
-  if (!SNIPER_CHAT_ID) return res.status(400).json({ error: 'SNIPER_CHAT_ID not configured — set it in env vars and redeploy' });
+  if (!SNIPER_CHAT_IDS.length) return res.status(400).json({ error: 'SNIPER_CHAT_ID not configured — set it in env vars and redeploy' });
 
   // Sensible defaults so a curl with just {key} fires a recognizable demo
   // signal without requiring the caller to know every field of the schema.
@@ -368,7 +379,7 @@ app.post('/api/test/broadcast', (req, res) => {
   };
 
   sniperBroadcast(type, action, filled);
-  res.json({ ok: true, sent: { type, action, chatId: SNIPER_CHAT_ID } });
+  res.json({ ok: true, sent: { type, action, chatIds: SNIPER_CHAT_IDS } });
 });
 
 // CTO endpoints
@@ -409,7 +420,7 @@ app.post('/api/cto/add', async (req, res) => {
       }
     } catch (_) {}
 
-    if (SNIPER_CHAT_ID) {
+    if (SNIPER_CHAT_IDS.length) {
       try {
         const c = r.cto;
         const ca = c.addr || '';
@@ -421,9 +432,7 @@ app.post('/api/cto/add', async (req, res) => {
         const tweetKbCto = { inline_keyboard: [[{ text: '🐦 Tweet this CTO', url: buildTweetIntentUrl(buildCtoTweet(c)) }]] };
         const logoUrl = c.logo
           || `https://dd.dexscreener.com/ds-data/tokens/${(c.chain || 'solana').toLowerCase()}/${(c.addr || '').toLowerCase()}.png`;
-        bot.sendPhoto(SNIPER_CHAT_ID, logoUrl, { caption, parse_mode: 'Markdown', reply_markup: tweetKbCto }).catch(() => {
-          bot.sendMessage(SNIPER_CHAT_ID, caption, { parse_mode: 'Markdown', disable_web_page_preview: true, reply_markup: tweetKbCto }).catch(() => {});
-        });
+        dispatchPhoto(logoUrl, caption, tweetKbCto);
       } catch (_) {}
     }
 
